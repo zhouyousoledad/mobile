@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>mobile</title>
+  </head>
+  <style>
+  	*{
+  		padding: 0;
+  		margin: 0;
+  		font-size: 0.25rem;
+  	}
+  	html,body{
+  		background-color: #f1f2f7;
+  	}
+  	ul li{
+  		list-style: none;
+  	}
+  		.clearfix:after {
+		content: ".";
+		display: block;
+		height: 0;
+		clear: both;
+		visibility: hidden;
+	}
+		.flex {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+	.btn{
+		border: none;
+		background-color: #09F;
+		font-size: 0.3rem;
+		color: #fff;
+		border-radius: 5px;
+	}
+  </style>
+  <body>
+    <div id="app"></div>
+    <!-- built files will be auto injected -->
+  </body>
+
+      <script>
+  (function(a, b) {
+    window.use_screen_base = '750_mate';
+    var c = "orientationchange" in b ? "orientationchange": "resize",
+    d = use_screen_base.indexOf("_mate"),
+    e = parseInt(use_screen_base),
+    f = a.documentElement,
+    g = function() {
+        var a = f.clientWidth,
+        c = b.innerWidth;
+        var sz= 100 * (c / e);
+            f.style.fontSize = 100 * (c / e) + "px";
+    };
+    if (/iPad.*OS|iPhone.*OS/.test(navigator.userAgent) && d > 0) {
+        var h = a.querySelectorAll("meta[name=viewport]"),
+        i = b.devicePixelRatio;
+        i = i != 1 ? 1 : 1,
+        h[0] && h[0].setAttribute("content", "width=device-width, user-scalable=no, minimum-scale=" + 1 / i + ", maximum-scale=" + 1 / i + ", initial-scale=" + 1 / i)
+    }
+    g()
+			b.addEventListener(c, g, !1)
+    delete use_screen_base
+})(document, window);
+
+function tips(id,data){
+	$("#"+id).html(data).show(0).delay(1800).hide(0); 
+}
+function trim(s){  
+    return s.replace(/(^\s*)|(\s*$)/g, "");
+}
+   </script>
+</html>
