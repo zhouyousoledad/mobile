@@ -90,8 +90,9 @@
 				var a={
 					uid:this.frienddata.account,
 					nickname:this.frienddata.username,
-					avac:this.frienddata.src,
-					himuid:this.frienddata.account
+					bridge:[this.uid,this.frienddata.account],
+					himavac:this.frienddata.src,
+					avac:this.frienddata.src
 				}
 				this.$emit('join',a)
 			},

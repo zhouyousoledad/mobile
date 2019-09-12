@@ -12,7 +12,7 @@
 				<div class="content-main">
 				<div v-if="findex==0">
 					<!--<History @join="joining" :data="users" :datatwo="messageList"></History>-->
-<History @join="joining" :data="users" :datatwo="messageList"></History>
+<History @join="joining" :datass="users" :datatwo="messageList"></History>
 				</div>
 				<div v-if="findex==1">
 					<Contacts ref="mychild" :addmessage="addmessage" @up="second"></Contacts>
@@ -29,7 +29,7 @@
 			<swiper-slide class="swiper-no-swiping" style="height: 736px;">
 				<!--聊天室2-->
 				<Headreturn @back="updown" :Title="title"></Headreturn>
-				<Chat :ok="sendMessage" :Data="currentMessage" :Title="title" :Huid="himuid" :Acav="himavac"></Chat>
+				<Chat :ok="sendMessage" :Data="currentMessage" :Title="title" :Acav="otheracav"></Chat>
 			</swiper-slide>
 			<!--修改个人资料3-->
 			<swiper-slide class="swiper-no-swiping" style="height: 736px;">
@@ -121,26 +121,21 @@
       			users: [],
       			bridge: [],
       			title:'',
-      			himavac:'',
-      			himuid:'',
+      			otheracav:'',
+      			changeflag:false,
+      			closeflag:false,
 			}
 		},
 		methods: {
 			joining(data){
-				this.bridge = [data.himuid,this.uid]
-				this.title = data.nickname
-				this.himavac = data.avac
-				this.himuid = data.himuid
-//				var a={
-//					roomnumber:this.bridge.sort().join(''),
-//					privates:this.uid
-//				}
-//				historyinfo(a).then(res => {
-//						this.historylist=res.data.userinfo
-//				})
-//				updatahistoryinfor(a).then(res=>{
-//					console.log(res)
-//				})
+				this.bridge = data.bridge
+				if(data.uid == this.uid){
+					this.title = data.himname
+					this.otheracav = data.himavac
+				}else{
+					this.title = data.nickname
+					this.otheracav = data.avac
+				}
 				this.updown(2)
 			},
 			updown(index) {  //调整页面位置
@@ -196,7 +191,6 @@ socket.onmessage = function(e){
   			vm.flagt = true
     	}
     }else if(message.type == 4){
-    	console.log(message.bridge)
     	message.bridge.forEach(v=>{
     		if(v == vm.uid){
     			if(vm.$refs.mychild != undefined){
@@ -208,30 +202,31 @@ socket.onmessage = function(e){
     		vm.topl = message.msg
   			vm.flagt = true
     	}
-    }else if(message.type == 2){	
-    	
+    }else if(message.type == 2){	 
+    	this.changeflag = false
     	vm.messageList.push(message);
-//  if(message.users){
-//  	vm.users = message.users;
-//  }
- }else{
-  	vm.messageList = message
-  	
-  	let data = vm.messageList.filter(item=>{
-//		if(item.uid != this.uid){
-//			return item.uid != vm.uid
-//		}else{
-//			return item.uid != vm.uid
-//		}
-  	})
-  	console.log(data)
+    	  	var datas = vm.messageList
+    	  	var data = JSON.parse(JSON.stringify(datas))
+    	  	data = data.reverse();  
 var hash = {};
     data = data.reduce(function(item, next) {
-        hash[next.uid] ? '' : hash[next.uid] = true && item.push(next);
+        hash[next.roomnumber] ? '' : hash[next.roomnumber] = true && item.push(next);
         return item
     }, [])
 vm.users = data
 
+ }else{
+ 	this.changeflag = true
+  	vm.messageList = message
+  	var datas = message
+    var data = JSON.parse(JSON.stringify(datas))
+  	data = data.reverse();  
+var hash = {};
+    data = data.reduce(function(item, next) {
+        hash[next.roomnumber] ? '' : hash[next.roomnumber] = true && item.push(next);
+        return item
+    }, [])
+vm.users = data
     }
     
 }   
@@ -248,7 +243,6 @@ vm.users = data
 				}
 		var minute = date.getMinutes(); //分
 		var total = hour+':'+minute
-
 		this.socket.send(JSON.stringify({
 			uid:this.uid,
 			type:type,
@@ -291,19 +285,28 @@ vm.users = data
 			currentMessage(){
 				let vm = this;
 
-//				let data = vm.messageList.filter(item=>{
-//					if(vm.bridge == "undefined"){
-//						return true
-//					}else{
-//						return item.bridge.sort().join(',') == vm.bridge.sort().join(',')
-//					}
-//					
-//				})
-//				console.log()				
-//				data.map(item=>{
-//					item.status = 0
-//					return item;
-//				})
+				let data = vm.messageList.filter(item=>{
+					if(vm.bridge == "undefined"){
+						return true
+					}else{
+						return item.bridge.sort().join(',') == vm.bridge.sort().join(',')
+					}
+					
+				})
+				if(this.changeflag == false){
+					this.closeflag == true
+					data.map(item=>{
+				if(item.status == 1 && this.closeflag == false){
+					var a={"roomnumber":item.roomnumber,"privates":this.uid};   //通过id
+				updatahistoryinfor(a).then(res=>{
+					this.closeflag = true
+				})	
+				}
+					item.status = 0
+					return item;
+				})
+				}
+
 					return vm.messageList;
 		        },
 		},
@@ -315,7 +318,6 @@ vm.users = data
 		mounted() {
 			var avat = JSON.parse(sessionStorage.getItem('userinfo'));
 			this.avac = avat.src;
-			console.log(this.avac)
 			this.uid = avat.account;
 			this.nickname = avat.username;
 			this.conWebSocket();

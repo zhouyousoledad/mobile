@@ -1,12 +1,12 @@
 <template>
 	<div class="login-bg flex">
+
 		<img src="../../build/logo.png" class="logo">
 		<div class="login-body">
 			<p><input type="text" v-model="logining.account" placeholder="请输入用户名"></p>
 			<p><input type="password" v-model="logining.password" placeholder="请输入密码"></p>
 			<div><button type="button" @click="login">登录</button></div>
 		</div>
-			
 	</div>
 </template>
 
@@ -16,6 +16,7 @@
 		data() {
 			return {
 				logining:{},
+				saber:''
 			}
 		},
 		methods:{
@@ -30,13 +31,9 @@
 						this.$router.push({path:'/index'})
 					}
 				})
-
-}
-//				this.$router.push({path:'/exam/instructions',query:{id:res.data.rows[0].id}});
-//				this.$router.push({path:'/index'})
 			},
 		}
-	
+	}
 </script>
 
 <style lang="less" scoped="scoped">

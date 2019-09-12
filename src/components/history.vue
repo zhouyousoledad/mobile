@@ -1,20 +1,19 @@
 <template>
 	<div>
 	<ul class="chatlist">
-		<li v-for="(item,index) in data" :key="index" class="clearfix" @click="joining(item)">		
-			<div><img :src="item.himavac"></div>
+		<li v-for="(item,index) in datass" :key="index" class="clearfix" @click="joining(item)">		
+			<div><img :src="item.himavac" v-if="item.uid == uid"><img :src="item.avac" v-else></div>
 			<div>
-				<p>{{item.himname}}</p>
-				<p>{{getlastmsg(item)}}</p>
+				<p v-if="item.uid == uid">{{item.himname}}</p>
+				<p v-else>{{item.nickname}}</p>
+				<p>{{item.msg}}</p>
 			</div>
 			<div>
-				<p>{{gettime(item)}}</p>
+				<p>{{item.time}}</p>
 				<p class="cricus" v-if="getMsgNum(item) != 0">{{getMsgNum(item)}}</p>
-			</div>
-			
+			</div>			
 		</li> 
 	</ul>
-
 	</div>
 </template>
 
@@ -32,7 +31,7 @@
 				type: Array,
                 default: ''
 			},
-			data:{
+			datass:{
 				type: Array,
                 default: ''
 			}
@@ -40,12 +39,12 @@
 		methods:{
 			joining(numbers){
 				this.$emit('join',numbers)
-				var a={"roomnumber":numbers.roomnumber,"privates":this.uid};
-				if(this.getMsgNum(numbers) != 0){
-				updatahistoryinfor(a).then(res=>{
-					console.log(res)
-				})	
-				}
+//				var a={"roomnumber":numbers.roomnumber,"privates":this.uid};
+//				if(this.getMsgNum(numbers) != 0){
+//				updatahistoryinfor(a).then(res=>{
+//					console.log(res)
+//				})	
+//				}
 			},
 			getMsgNum(user){	
 				var a=this.datatwo.filter(item=>{
@@ -57,44 +56,11 @@
 			}else{
 				return 0
 			}
-  			},
-			getlastmsg(user){
-			var a=this.datatwo.filter(item=>{
-				return item.roomnumber === user.roomnumber && item.type ===2
-			})
-
-			var lengths = a.length
-			if(lengths != 0){
-				var b=a[lengths-1].msg;
-				return b;
-			}else{
-				
-			}
-			},
-			gettime(user){
-				var a=this.datatwo.filter(item=>{
-				return item.uid === user.uid && item.type ===2
-			})
-			var lengths = a.length
-			if(lengths != 0){
-				var b=a[lengths-1].time;
-				return b
-			}else{
-				
-			}
-			},
+  		},
 		},
 		created(){
 			var user = JSON.parse(sessionStorage.getItem('userinfo'))
 			this.uid = user.account
-//			var a={
-//				privates:this.uid
-//			}
-//			lasthistory(a).then(res => {
-//				this.chatdata = res.data.userinfo
-//				
-//			})
-
 		}
 	}
 </script>

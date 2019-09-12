@@ -10,7 +10,6 @@ export default new Router({
     {
       path: '/',
       name: 'login',
-//    component: HelloWorld
       component: (resolve) => require(['../view/login'], resolve),
     },
     {

@@ -12,7 +12,6 @@ let users = [];
 let conns = {};
 let onlineuser = [];
 function boardcast(obj){
-	console.log(conns)
 	if(obj.bridge && obj.bridge.length){
 		obj.bridge.forEach(item=>{
 			if(conns[item] == undefined){
@@ -29,15 +28,19 @@ MongoClient.connect(url, { useNewUrlParser: true }, function(err, db) {
     if(obj.type==2){
     	var arr=[]
 		var c1=Object.assign({},obj)
+		console.log(obj)
+		console.log(obj.bridge[1])
 		obj.privates = obj.bridge[0]
 		c1.privates = obj.bridge[1]
 		arr.push(obj)
 		arr.push(c1)
+		console.log(c1)
 		for(let i=0;i<arr.length;i++){
 			if(arr[i].privates == arr[i].uid){
 			arr[i].status = 0
 		}
 	}
+		
     dbo.collection("chathistory").insertMany(arr, function(err, res) {
         if (err) throw err;
     });
@@ -83,6 +86,7 @@ var server = ws.createServer(function(conn){
 			var whereStr = {"privates":obj.uid};
     dbo.collection("chathistory").find(whereStr).toArray(function(err, result) { // 返回集合中所有数据
         if (err) throw err;
+//      console.log(result)
 		conns[''+obj.uid+''].sendText(JSON.stringify(result));
 
         });

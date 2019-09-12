@@ -3,6 +3,7 @@ var bodyParser = require('body-parser')
 var router=express.Router();
 var MongoClient = require('mongodb').MongoClient;
 var querystring = require("querystring");
+var ObjectId = require('mongodb').ObjectId;
 var url = "mongodb://localhost:27017/";
 var urls = require("url");
 router.use(bodyParser.json());
@@ -130,16 +131,8 @@ router.get('/lastinfo',function(req,res,next){
 })
 router.post('/updatastatus', function(req, res, next) {
 	var aa = res
-//		var whereStr = [
-//		{"account":req.body.account,"heaccount":req.body.heaccount},
-//		{"account":req.body.heaccount,"heaccount":req.body.account},
-//		]
-		var whereStr = {"roomnumber":req.body.roomnumber,"privates":req.body.privates,"status":1};  // 查询条件
+		var whereStr = {"roomnumber":req.body.roomnumber,"privates":req.body.privates,"status":1};
     	var updateStr = {$set: { "status" : 0 }};
-//		var arg = urls.parse(req.url).query;
-//		var params = querystring.parse(arg);
-//		var account = params.account;
-//		var heaccount = params.heaccount;
 		dbo.collection("chathistory").updateMany(whereStr, updateStr, function(err, res) {
         if (err) throw err;
         var data = {
