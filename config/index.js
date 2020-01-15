@@ -5,6 +5,7 @@
 const path = require('path')
 
 module.exports = {
+	assetsPublicPath: '/dist/',
   dev: {
 
     // Paths
@@ -12,14 +13,14 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
     		'/login':{
-    			 target:'http://localhost:3030',          
+    			 target:'http://192.168.2.115:3030',          
     			 changeOrigin:true,//允许跨域
     			 pathRewrite:{ 
     				'^/login':'/login'
     				}
     		},
     		'/message':{
-    			 target:'http://localhost:3030',          
+    			 target:'http://192.168.2.115:3030',          
     			 changeOrigin:true,//允许跨域
     			 pathRewrite:{ 
     				'^/message':'/message'
@@ -58,7 +59,7 @@ module.exports = {
     // Paths
     assetsRoot: path.resolve(__dirname, '../dist'),
     assetsSubDirectory: 'static',
-    assetsPublicPath: '/',
+    assetsPublicPath: './',
 
     /**
      * Source Maps
